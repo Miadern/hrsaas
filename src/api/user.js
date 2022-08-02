@@ -1,8 +1,14 @@
 import request from '@/utils/request'
 
-export function login() {
+/**
+ * 登录
+ * @param {*} data {mobile,password}
+ * @returns
+ */
+export function login(data) {
   return request({
-    url: '',
+    url: '/sys/login',
     method: 'post',
+    data,
   })
 }
