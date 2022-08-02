@@ -6,6 +6,9 @@ router.beforeEach((to, from, next) => {
   const token = store.state.user.token //登录的变量
   //已登录
   if (token) {
+    if (!store.state.user.userInfo.userId) {
+      store.dispatch('user/getUserInfo')
+    }
     //是否要进入登录页
     if (to.path === '/login') return next('/') //1.是  跳到首页
     next() //2.不是  正常通行
