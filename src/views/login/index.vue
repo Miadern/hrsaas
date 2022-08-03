@@ -81,7 +81,6 @@ export default {
         await this.$store.dispatch('user/getToken', this.loginForm)
         this.$router.push('/')
         this.$message.success('登陆成功')
-      } catch (error) {
       } finally {
         this.islogin = false
       }
