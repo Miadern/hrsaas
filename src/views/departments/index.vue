@@ -19,7 +19,7 @@
 
 <script>
 import treetoolsVue from './components/treetools.vue'
-
+import { getDeptsApi } from '@/api/departments'
 export default {
   components: {
     treetoolsVue,
@@ -37,9 +37,17 @@ export default {
     }
   },
 
-  created() {},
+  created() {
+    this.getDeptsA()
+  },
 
-  methods: {},
+  methods: {
+    async getDeptsA() {
+      const res = await getDeptsApi()
+      console.log(res.depts)
+      this.treeDate = res.depts
+    },
+  },
 }
 </script>
 
