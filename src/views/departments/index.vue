@@ -3,37 +3,52 @@
     <div class="app-container">
       <el-card class="box-card">
         <treetoolsVue
+          @add="dialogVisible = true"
           :isRoot="true"
           :treeNode="{ name: '传智教育', manage: '负责人' }"
         ></treetoolsVue>
         <!-- 树形 -->
         <el-tree :data="treeDate" default-expand-all :props="propsDefault">
           <template v-slot="scope">
-            <treetoolsVue :treeNode="scope.data"></treetoolsVue>
+            <treetoolsVue
+              @add="addDeptFn"
+              :treeNode="scope.data"
+              @remove="getDeptsA"
+              @edit="editFn"
+            ></treetoolsVue>
           </template>
         </el-tree>
       </el-card>
     </div>
+    <!-- 添加部门弹出层 -->
+    <addDeptVue
+      ref="addDep"
+      :visible.sync="dialogVisible"
+      :currentNode="currentNode"
+      @successLoad="getDeptsA"
+    ></addDeptVue>
   </div>
 </template>
 
 <script>
 import treetoolsVue from './components/treetools.vue'
 import { getDeptsApi } from '@/api/departments'
+import { tranListToTree } from '@/utils'
+import addDeptVue from './components/add-dept.vue'
+
 export default {
   components: {
     treetoolsVue,
+    addDeptVue,
   },
   data() {
     return {
-      treeDate: [
-        { name: '总裁办', children: [{ name: '董事会' }] },
-        { name: '行政部' },
-        { name: '人事部' },
-      ],
+      dialogVisible: false,
+      treeDate: [],
       propsDefault: {
         label: 'name',
       },
+      currentNode: {},
     }
   },
 
@@ -44,8 +59,16 @@ export default {
   methods: {
     async getDeptsA() {
       const res = await getDeptsApi()
-      console.log(res.depts)
-      this.treeDate = res.depts
+      this.treeDate = tranListToTree(res.depts, '')
+    },
+    addDeptFn(val) {
+      this.dialogVisible = true
+      this.currentNode = val
+    },
+    //点击编辑部门
+    editFn(treeNode) {
+      this.dialogVisible = true
+      this.$refs.addDep.getDeptById(treeNode.id)
     },
   },
 }

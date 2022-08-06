@@ -15,7 +15,7 @@ const isTimeout = () => {
 const service = axios.create({
   //   baseURL: 'http://localhost:8888/api',
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 5000,
+  timeout: 10000,
 }) // 创建一个axios的实例
 service.interceptors.request.use(async (config) => {
   if (store.state.user.token) {
