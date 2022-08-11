@@ -5,7 +5,7 @@
         <treetoolsVue
           @add="dialogVisible = true"
           :isRoot="true"
-          :treeNode="{ name: '传智教育', manage: '负责人' }"
+          :treeNode="{ name: '传智教育', manager: '负责人' }"
         ></treetoolsVue>
         <!-- 树形 -->
         <el-tree :data="treeDate" default-expand-all :props="propsDefault">
