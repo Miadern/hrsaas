@@ -2,12 +2,12 @@ import router from '@/router'
 import store from '@/store'
 
 const whiteList = ['/login', '/404']
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const token = store.state.user.token //登录的变量
   //已登录
   if (token) {
     if (!store.state.user.userInfo.userId) {
-      store.dispatch('user/getUserInfo')
+      await store.dispatch('user/getUserInfo')
     }
     //是否要进入登录页
     if (to.path === '/login') return next('/') //1.是  跳到首页
