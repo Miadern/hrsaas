@@ -34,3 +34,25 @@ export function getUserDetailApi(id) {
     url: '/sys/user/' + id,
   })
 }
+
+/**
+ * 保存员工基本信息
+ * @param {*} id
+ * @returns
+ */
+export function saveUserInfoApi(data, id) {
+  return request({
+    url: '/sys/user/' + id,
+    method: 'PUT',
+    data,
+  })
+}
+
+/** *
+ *  读取用户详情的基础信息
+ * **/
+export function getPersonalDetail(id) {
+  return request({
+    url: `/employees/${id}/personalInfo`,
+  })
+}
