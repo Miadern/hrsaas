@@ -10,7 +10,7 @@ import attendancesRouter from './modules/attendances'
 import salarysRouter from './modules/salarys'
 import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
-
+import _import from './modules/import'
 /* Layout */
 import Layout from '@/layout'
 
@@ -55,6 +55,7 @@ export const asyncRouters = [
   salarysRouter,
   settingRouter,
   socialRouter,
+  _import,
 ]
 const createRouter = () =>
   new Router({

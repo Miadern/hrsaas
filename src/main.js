@@ -17,6 +17,9 @@ import '@/permission' // permission control
 import * as directives from '@/directives'
 
 import components from '@/components' //引入自定义组件
+
+import * as filters from '@/filters'
+
 // 假数据
 // if (process.env.NODE_ENV === 'production') {
 //   const { mockXHR } = require('../mock')
@@ -29,6 +32,9 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 for (let key in directives) {
   Vue.directive(key, directives[key])
+}
+for (let key in filters) {
+  Vue.filter(key, filters[key])
 }
 
 Vue.config.productionTip = false
