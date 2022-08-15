@@ -24,12 +24,13 @@
           <el-table-column label="序号" sortable="" type="index" />
           <el-table-column label="姓名" sortable="" prop="username" />
           <el-table-column label="员工" sortable="" prop="staffPhoto">
-            <template v-slot="scope">
+            <template v-slot="{ row }">
               <img
                 style="height: 100px; width: 100px; border-radius: 50%"
-                :src="scope.row.staffPhoto"
+                :src="row.staffPhoto"
                 alt=""
                 v-imgError="require('@/assets/common/head.jpg')"
+                @click="showErcodeDialog(row.staffPhoto)"
               />
             </template>
           </el-table-column>
@@ -97,10 +98,14 @@
       :visible.sync="showAdd"
       @addEmployee="getEmployeesInfo"
     ></addemPloyees>
+    <el-dialog title="二维码" :visible.sync="ercodeDialog">
+      <canvas id="canvas"></canvas>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import QRcode from 'qrcode'
 import { getEmployeesInfoApi, delUser } from '@/api/employees'
 import EmployeeEnum from '@/constant/employees.js'
 import addemPloyees from './components/addemPloyees.vue'
@@ -119,6 +124,7 @@ export default {
         size: 5,
       },
       showAdd: false,
+      ercodeDialog: false,
     }
   },
 
@@ -127,6 +133,15 @@ export default {
   },
 
   methods: {
+    //点击头像触发的二维码事件
+    showErcodeDialog(pic) {
+      if (!pic) return this.$message.error('该用户还未上传头像')
+      this.ercodeDialog = true
+      this.$nextTick(() => {
+        const canvas = document.getElementById('canvas')
+        QRcode.toCanvas(canvas, pic)
+      })
+    },
     async onDaoChu() {
       const res = await import('@/vendor/Export2Excel')
       const { rows, total } = await getEmployeesInfoApi({
