@@ -20,6 +20,10 @@ import components from '@/components' //引入自定义组件
 
 import * as filters from '@/filters'
 
+import Print from 'vue-print-nb'
+// Global instruction
+Vue.use(Print)
+
 // 假数据
 // if (process.env.NODE_ENV === 'production') {
 //   const { mockXHR } = require('../mock')
