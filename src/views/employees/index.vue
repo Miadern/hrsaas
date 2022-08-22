@@ -8,12 +8,17 @@
             size="small"
             type="warning"
             @click="$router.push('/import')"
+            v-isHas="points.employees.import"
             >导入</el-button
           >
           <el-button size="small" type="danger" @click="onDaoChu"
             >导出</el-button
           >
-          <el-button size="small" type="primary" @click="addUser"
+          <el-button
+            size="small"
+            type="primary"
+            @click="addUser"
+            v-isHas="points.employees.add"
             >新增员工</el-button
           >
         </template>
@@ -73,7 +78,11 @@
               <el-button type="text" size="small" @click="openRole(row.id)"
                 >角色</el-button
               >
-              <el-button type="text" size="small" @click="delUser(row)"
+              <el-button
+                type="text"
+                size="small"
+                @click="delUser(row)"
+                v-isHas="points.employees.del"
                 >删除</el-button
               >
             </template>
@@ -117,8 +126,10 @@ import EmployeeEnum from '@/constant/employees.js'
 import addemPloyees from './components/addemPloyees.vue'
 import assignRole from './components/assign-role.vue'
 const { exportExcelMapPath } = EmployeeEnum
+import mixinsPermission from '@/mixins/permission'
 export default {
   name: 'employees',
+  mixins: [mixinsPermission],
   components: {
     addemPloyees,
     assignRole,

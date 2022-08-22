@@ -3,7 +3,11 @@
     <div class="app-container">
       <el-tabs v-model="activeName">
         <el-tab-pane label="角色管理" name="first">
-          <el-button type="primary" size="small" @click="dialogVisible = true"
+          <el-button
+            type="primary"
+            size="small"
+            @click="dialogVisible = true"
+            v-if="isHas(points.role.add)"
             >新增角色</el-button
           >
           <!-- 表格 -->
@@ -12,11 +16,16 @@
             <el-table-column prop="name" label="角色"> </el-table-column>
             <el-table-column label="描述" prop="description"> </el-table-column>
             <el-table-column label="操作">
-              <template>
-                <el-button size="small" type="success" @click="setRightsFn"
+              <template v-slot="{ row }">
+                <el-button size="small" type="success" @click="setRightsFn(row)"
                   >分配权限</el-button
                 >
-                <el-button size="small" type="primary">编辑</el-button>
+                <el-button
+                  size="small"
+                  type="primary"
+                  v-if="isHas(points.role.edit)"
+                  >编辑</el-button
+                >
                 <el-button size="small" type="danger">删除</el-button>
               </template>
             </el-table-column>
@@ -86,6 +95,8 @@
       title="给角色分配权限"
       :visible.sync="setRightsDialog"
       width="50%"
+      @close="RightsDialogClose"
+      destroy-on-close
     >
       <el-tree
         default-expand-all
@@ -93,26 +104,33 @@
         node-key="id"
         :default-checked-keys="defaultExpandedKeys"
         :data="permissions"
+        ref="perTree"
         :props="{
           label: 'name',
         }"
       ></el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="setRightsDialog = false">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
+        <el-button type="primary" @click="onSaveRightsDialog">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getRoleApi, addRoleApi } from '@/api/role'
+import {
+  getRoleApi,
+  addRoleApi,
+  getRoleInfoApi,
+  editRoleInfoApi,
+} from '@/api/role'
 import { getCompanyInfoApi } from '@/api/setting'
 import { getPermissionList } from '@/api/permission'
 import { tranListToTree } from '@/utils'
-
+import mixinsPermission from '@/mixins/permission'
 export default {
   name: 'setting',
+  mixins: [mixinsPermission],
   data() {
     return {
       activeName: 'first',
@@ -132,7 +150,8 @@ export default {
       formData: {},
       setRightsDialog: false,
       permissions: [], //树形数据
-      defaultExpandedKeys: ['1', '1063315016368918528'], //分配权限展开数据
+      defaultExpandedKeys: [], //分配权限展开数据
+      currentRoleId: '', //选中的行的ID
     }
   },
 
@@ -144,8 +163,11 @@ export default {
 
   methods: {
     //点击分配权限触发
-    setRightsFn() {
+    async setRightsFn(row) {
+      this.currentRoleId = row.id
       this.setRightsDialog = true
+      const res = await getRoleInfoApi(row.id)
+      this.defaultExpandedKeys = res.permIds
     },
 
     async getRole() {
@@ -179,13 +201,26 @@ export default {
         this.$store.state.user.userInfo.companyId,
       )
       this.formData = res
-      console.log(res)
     },
     //获取权限列表
     async getPermissionList() {
       const res = await getPermissionList()
       const permissions = tranListToTree(res, '0')
       this.permissions = permissions
+    },
+    //关闭权限弹窗
+    RightsDialogClose() {
+      this.defaultExpandedKeys = []
+    },
+    //保存权限分配
+    async onSaveRightsDialog() {
+      // this.currentRoleId
+      await editRoleInfoApi({
+        id: this.currentRoleId,
+        permIds: this.$refs.perTree.getCheckedKeys(),
+      })
+      this.$message.success('分配成功！')
+      this.setRightsDialog = false
     },
   },
 }
