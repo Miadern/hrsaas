@@ -70,7 +70,9 @@
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="openRole(row.id)"
+                >角色</el-button
+              >
               <el-button type="text" size="small" @click="delUser(row)"
                 >删除</el-button
               >
@@ -93,11 +95,15 @@
           />
         </el-row>
       </el-card>
+      <!-- 角色分配 -->
+      <assignRole :visible.sync="visibleRole" :currentId="currentId" />
     </div>
+    <!-- 添加 -->
     <addemPloyees
       :visible.sync="showAdd"
       @addEmployee="getEmployeesInfo"
     ></addemPloyees>
+    <!-- 二维码 -->
     <el-dialog title="二维码" :visible.sync="ercodeDialog">
       <canvas id="canvas"></canvas>
     </el-dialog>
@@ -109,14 +115,17 @@ import QRcode from 'qrcode'
 import { getEmployeesInfoApi, delUser } from '@/api/employees'
 import EmployeeEnum from '@/constant/employees.js'
 import addemPloyees from './components/addemPloyees.vue'
+import assignRole from './components/assign-role.vue'
 const { exportExcelMapPath } = EmployeeEnum
 export default {
   name: 'employees',
   components: {
     addemPloyees,
+    assignRole,
   },
   data() {
     return {
+      visibleRole: false,
       employees: [],
       total: 0,
       pages: {
@@ -125,6 +134,7 @@ export default {
       },
       showAdd: false,
       ercodeDialog: false,
+      currentId: '',
     }
   },
 
@@ -133,6 +143,11 @@ export default {
   },
 
   methods: {
+    //打开角色窗口
+    openRole(id) {
+      this.visibleRole = true
+      this.currentId = id
+    },
     //点击头像触发的二维码事件
     showErcodeDialog(pic) {
       if (!pic) return this.$message.error('该用户还未上传头像')

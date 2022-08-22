@@ -13,7 +13,9 @@
             <el-table-column label="描述" prop="description"> </el-table-column>
             <el-table-column label="操作">
               <template>
-                <el-button size="small" type="success">分配权限</el-button>
+                <el-button size="small" type="success" @click="setRightsFn"
+                  >分配权限</el-button
+                >
                 <el-button size="small" type="primary">编辑</el-button>
                 <el-button size="small" type="danger">删除</el-button>
               </template>
@@ -79,14 +81,38 @@
         <el-button type="primary" @click="onAddClick">确 定</el-button>
       </span>
     </el-dialog>
+    <!--分配权限  -->
+    <el-dialog
+      title="给角色分配权限"
+      :visible.sync="setRightsDialog"
+      width="50%"
+    >
+      <el-tree
+        default-expand-all
+        show-checkbox
+        node-key="id"
+        :default-checked-keys="defaultExpandedKeys"
+        :data="permissions"
+        :props="{
+          label: 'name',
+        }"
+      ></el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRightsDialog = false">取 消</el-button>
+        <el-button type="primary">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getRoleApi, addRoleApi } from '@/api/role'
 import { getCompanyInfoApi } from '@/api/setting'
+import { getPermissionList } from '@/api/permission'
+import { tranListToTree } from '@/utils'
 
 export default {
+  name: 'setting',
   data() {
     return {
       activeName: 'first',
@@ -104,15 +130,24 @@ export default {
         description: [],
       },
       formData: {},
+      setRightsDialog: false,
+      permissions: [], //树形数据
+      defaultExpandedKeys: ['1', '1063315016368918528'], //分配权限展开数据
     }
   },
 
   created() {
     this.getRole()
     this.getCompanyInfo()
+    this.getPermissionList()
   },
 
   methods: {
+    //点击分配权限触发
+    setRightsFn() {
+      this.setRightsDialog = true
+    },
+
     async getRole() {
       const { rows, total } = await getRoleApi({
         page: this.page,
@@ -145,6 +180,12 @@ export default {
       )
       this.formData = res
       console.log(res)
+    },
+    //获取权限列表
+    async getPermissionList() {
+      const res = await getPermissionList()
+      const permissions = tranListToTree(res, '0')
+      this.permissions = permissions
     },
   },
 }
