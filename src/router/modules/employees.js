@@ -3,22 +3,24 @@ export default {
   path: '/employees',
   component: Layout,
   meta: {
-    id: 'employees',
+    id: 'employees', // 用来和后端权限做约定的
   },
   children: [
     {
       path: '',
       component: () => import('@/views/employees'),
       meta: { title: '员工', icon: 'people' },
+      name: 'employees',
     },
     {
-      path: '/employees/detail/:id',
-      component: () => import('@/views/employees/detail.vue'),
+      path: 'detail/:id',
+      component: () => import('@/views/employees/detail'),
+      props: true,
       hidden: true,
     },
     {
-      path: '/employees/print/:id',
-      component: () => import('@/views/employees/print.vue'),
+      path: 'print/:id',
+      component: () => import('@/views/employees/print'),
       hidden: true,
     },
   ],

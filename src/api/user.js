@@ -1,58 +1,47 @@
 import request from '@/utils/request'
 
 /**
- * 登录
- * @param {*} data {mobile,password}
- * @returns
+ * 登录请求
+ * @param {Object} data password mobile
+ * @returns promise
  */
 export function login(data) {
   return request({
     url: '/sys/login',
-    method: 'post',
+    method: 'POST',
     data,
   })
 }
-
 /**
- * 获取用户基本资料
- * @returns
+ * 获取用户信息
+ * @returns promise
  */
 export function getUserInfoApi() {
   return request({
     url: '/sys/profile',
-    method: 'post',
+    method: 'POST',
   })
 }
 
 /**
- * 获取员工基本信息
- * @param {*} id 员工ID
- * @returns
+ * 根据用户id获取员工详情数据
+ * @param {String} id 用户id
+ * @returns promise
  */
-export function getUserDetailApi(id) {
+export function getUserDetail(id) {
   return request({
     url: '/sys/user/' + id,
-  })
-}
-
-/**
- * 保存员工基本信息
- * @param {*} id
- * @returns
- */
-export function saveUserInfoApi(data, id) {
-  return request({
-    url: '/sys/user/' + id,
-    method: 'PUT',
-    data,
   })
 }
 
 /** *
- *  读取用户详情的基础信息
+ *
+ * 保存员工的基本信息
  * **/
-export function getPersonalDetail(id) {
+export function saveUserDetailById(data) {
   return request({
-    url: `/employees/${id}/personalInfo`,
+    url: `/sys/user/${data.id}`,
+    method: 'put',
+    data,
   })
 }

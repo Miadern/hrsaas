@@ -423,7 +423,6 @@ export default {
     手机号: 'mobile',
     转正日期: 'correctionTime',
   },
-
   exportExcelMapPath: {
     手机号: 'mobile',
     姓名: 'username',

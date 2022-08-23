@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
 
@@ -146,7 +147,7 @@ export function export_table_to_excel(id) {
     new Blob([s2ab(wbout)], {
       type: 'application/octet-stream',
     }),
-    'test.xlsx',
+    'test.xlsx'
   )
 }
 
@@ -198,7 +199,7 @@ export function export_json_to_excel({
             wch: val.toString().length,
           }
         }
-      }),
+      })
     )
     /*以第一行为初始值*/
     let result = colWidth[0]
@@ -225,6 +226,6 @@ export function export_json_to_excel({
     new Blob([s2ab(wbout)], {
       type: 'application/octet-stream',
     }),
-    `${filename}.${bookType}`,
+    `${filename}.${bookType}`
   )
 }
